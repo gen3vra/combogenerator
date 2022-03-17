@@ -5,25 +5,34 @@
    <meta charset="UTF-8" />
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>GMR's Combo Generator</title>
+   <title>Animator's Combo Generator 🌹</title>
    <meta name="description" content="Generate random different combos for animation purposes" />
    <meta name="keywords" content="combo, generator, animator" />
    <meta name="author" content="gen" />
    <link rel="shortcut icon" href="../favicon.ico">
-   <link rel="stylesheet" type="text/css" href="css/default.css" />
-   <link rel="stylesheet" type="text/css" href="css/component.css" />
+   <link rel="stylesheet" type="text/css" href="css/water.css" />
+   <link rel="stylesheet" type="text/css" href="css/Toast.min.css" />
    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
-   <script src="js/modernizr.custom.js"></script>
-   <link rel="stylesheet" href="css/pure-min.css">
    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <script src="js/clipboard.min.js"></script>
+   <script src="js/Toast.min.js"></script>
+   <style>
+      #credits {
+         position: absolute;
+         bottom: 0px;
+         right: 30px;
+         font-size: 2rem;
+      }
+   </style>
 </head>
 
+<!-- created by Gen / GMR / Genevra Rose -->
 <!-- BTW this is the oldest program known to mankind, don't expect this code to be good XD -->
 
 <body>
    <div class="container">
       <header>
-         <h1 class="title">GMR's Combo Generator</h1>
+         <h1 style="text-align: center; font-weight: 300; font-size: 3rem;">ANIMATOR'S COMBO GENERATOR</h1>
       </header>
       <script>
          var use_meleeCombos = true;
@@ -35,7 +44,7 @@
          function generateCombo() {
             var combos = new Array();
             var noCombos = ['No Combos'];
-            var meleeCombos = ["Kick", "Punch", "Grab", "Throw", "Elbow", "Knee", "Hip-check"];
+            var meleeCombos = ["Heavy Kick", "Light Kick", "Light Punch", "Heavy Punch", {move: "Grab", unique: true, follower: "Close Range Combo, Throw", used: false}, "Elbow", "Knee", "Hip-check",];
             var advancedCombos = ["Uppercut", "Jab", "Bone Breaker", "Charge", "Backflip Kick", "Frontflip Kick", "Roundhouse Kick", "Karate Chop", "Spin Kick", "Drop Kick", "Hip-check"];
             var elementalCombos = ["Laser Beam", "Electrocute", "Fire Element Attack", "Meteor Summon", "Lightning Bolt", "Ground Slam", "Next Move Fire Charged", "Next Move Electrically Charged"];
             var sillyCombos = ["Eye Poke", "Groin Kick", "Slap"];
@@ -81,20 +90,47 @@
                document.getElementById("finishersBtn").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> FINISHERS";
             }
             var combosTogether = "";
-            for (count = 0; count < comboLength; count++) {
-               combosTogether = combosTogether + combos[Math.floor(combos.length * Math.random())];
+            var count = 0;
+            while (count < comboLength) {
+               var rand = Math.floor(combos.length * Math.random());
+               if (combos[rand].move != null) {
+                  if (combos[rand].used === true) {
+                     //console.log('skipped usage of unique move');
+                     continue;
+                  }
+                  combos[rand].used = true;
+                  combosTogether = combosTogether + combos[rand].move;
+                  if (combos[rand].follower != null) {
+                     combosTogether += ", ";
+                     combosTogether = combosTogether + combos[rand].follower;
+                  }
+
+               } else {
+                  combosTogether = combosTogether + combos[rand];
+               }
+
+
                if (count < comboLength - 1) {
                   combosTogether += ", ";
                }
+               count++;
             }
             if (use_finisherCombos) {
                combosTogether += ", " + finishers[Math.floor(finishers.length * Math.random())]
             }
             var comboToGenerate = combosTogether;
             document.getElementById("comboBox").innerHTML = comboToGenerate;
+
+            document.getElementById("copyButtonId").disabled = false;
          }
          function copyToClipboard(text) {
-            prompt("Press CTRL + C (Or CMD + C) to copy your combo!", text);
+            //prompt("Press CTRL + C (Or CMD + C) to copy your combo!", text);
+
+            // there's a hidden close button here
+            new Toast({
+               message: 'Copied combo to clipboard. Press CTRL + V (or CMD + V) to paste!',
+               type: 'success'
+            });
          }
          function changeMelee() {
             use_meleeCombos = !use_meleeCombos;
@@ -119,26 +155,29 @@
 
          function updateTextInput(val) {
             document.getElementById('textInput').value = val;
+
+            generateCombo();
          }
       </script>
       <center>
-         <div>
-            <p id=comboBox>Your combo will generate here.</p>
-         </div>
+         <div style="min-height:100px;" id="comboBox">Your combo will generate here.</div>
          <style scoped>
             .generateButton {
-               background: rgb(202, 60, 60);
+               background: rgb(92, 241, 78);
             }
 
             .copyButton {
-               background: rgb(28, 184, 65);
+               background: rgb(52, 201, 238);
             }
          </style>
-         <button onClick="generateCombo()" class="pure-button pure-button-primary generateButton">GENERATE A
-            COMBO</button><button onclick="copyToClipboard(document.getElementById('comboBox').innerHTML)"
-            class="pure-button copyButton">COPY COMBO</button>
+         <button id="generateButton" onClick="generateCombo()"
+            class="pure-button pure-button-primary generateButton">GENERATE A
+            COMBO</button><button disabled="disabled" class="copyButton" id="copyButtonId" data-id="@item.Type"
+            data-clipboard-action="copy" data-clipboard-target="div#comboBox"
+            onclick="copyToClipboard(document.getElementById('comboBox').innerHTML)" class="pure-button copyButton">COPY
+            COMBO</button>
          <br>
-         <input type="range" name="rangeInput" min="3" max="25" value="8" onchange="updateTextInput(this.value);">
+         <input type="range" name="rangeInput" min="3" max="30" value="8" onchange="updateTextInput(this.value);">
          <input type="text" id="textInput" value="6">
          <hr>
          <button onclick="changeMelee()" class="pure-button" id="meleeAttackBtn"><i class="fa fa-check"
@@ -154,7 +193,20 @@
 
       </center>
    </div>
+   <br />
+
    </div>
+   <p style="text-align: center;">Hey, listen! Have an idea for a move? <br /><a style="font-size:1.1rem;"
+         href="https://forms.gle/gB9RayfFNtqENAzE8" target="_blank">Click here to visit a form to submit it
+         (https://forms.gle/gB9RayfFNtqENAzE8)</a></p>
+   <p id="credits"><a href="https://rose.dev/" target="_blank">🌹</a></p>
+   <script>
+      new ClipboardJS('.copyButton', {
+         target: function (trigger) {
+            return document.getElementById("comboBox");
+         }
+      });
+   </script>
 </body>
 
 </html>
