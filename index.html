@@ -28,46 +28,92 @@
 
       .boxContainer:first-of-type {
          max-width: 100%;
-         border: 2px solid white;
-         border-top: 2px solid white;
-         border-bottom: 1px solid white;
+         border: 2px solid var(--text-main);
+         border-top: 2px solid var(--text-main);
+         border-bottom: 1px solid var(--text-main);
          position: relative;
       }
 
       .boxContainer {
          max-width: 100%;
-         border: 2px solid white;
-         border-top: 1px solid white;
-         border-bottom: 1px solid white;
+         border: 2px solid var(--text-main);
+         border-top: 1px solid var(--text-main);
+         border-bottom: 1px solid var(--text-main);
          position: relative;
       }
 
       .boxContainer:last-of-type {
          max-width: 100%;
-         border: 2px solid white;
-         border-top: 1px solid white;
-         border-bottom: 2px solid white;
+         border: 2px solid var(--text-main);
+         border-top: 1px solid var(--text-main);
+         border-bottom: 2px solid var(--text-main);
          position: relative;
       }
 
 
       .boxLabel {
          position: absolute;
-         top: -15px;
+         top: -20px;
          left: 10px;
          height: 20px;
          padding-left: 10px;
          padding-right: 10px;
          max-width: 100%;
-         color: #fff;
+         color: var(--text-main);
          background-color: var(--background-body);
          /*border: 2px solid rgb(0, 0, 0);*/
          text-align: left;
-         font-size: 20px;
+         font-size: 23px;
+         font-weight: 300;
+         -webkit-touch-callout: none;
+         -webkit-user-select: none;
+         -khtml-user-select: none;
+         -moz-user-select: none;
+         -ms-user-select: none;
+         user-select: none;
       }
 
+      .boxLabel input[type="checkbox"] {
+         opacity: 0;
+         display: none;
+      }
+
+      .boxLabel input[type="checkbox"]+label {
+         color: var(--text-main);
+      }
+
+      .boxLabel input[type="checkbox"]:checked+label {
+         color: #2db620;
+      }
+
+      /**************/
+
       .moveCheckBoxContainer {
-         padding: 35px;
+         padding: 25px;
+         font-weight: 500;
+         -webkit-touch-callout: none;
+         -webkit-user-select: none;
+         -khtml-user-select: none;
+         -moz-user-select: none;
+         -ms-user-select: none;
+         user-select: none;
+      }
+
+      .moveCheckBoxContainer input[type="checkbox"] {
+         opacity: 0;
+         display: none;
+      }
+
+      .moveCheckBoxContainer input[type="checkbox"]+label {
+         color: rgb(134, 134, 134);
+      }
+
+      .moveCheckBoxContainer input[type="checkbox"]:checked+label {
+         color: var(--background-color);
+      }
+
+      .moveCheckLabel {
+         margin-right: 20px;
       }
    </style>
 
@@ -296,13 +342,19 @@
          <div style="min-height:100px; font-weight: 600;" id="comboBox">Your combo will generate here.</div>
          <style scoped>
             .generateButton {
-               background: rgb(92, 241, 78);
+               background: #26921d;
             }
 
             .copyButton {
-               background: rgb(52, 201, 238);
+               background: #34c9ee;
             }
          </style>
+
+         <div style="display: flex; margin: auto; align-items: center; justify-content: center; text-align: center;">
+            <input type="range" name="rangeInput" min="3" max="30" value="8" onchange="updateTextInput(this.value);">
+            <input type="text" id="textInput" value="6"
+               style="max-width: 25px; max-height: 15px; margin-left: 0.2rem; margin-top: 5px;">
+         </div>
          <button id="generateButton" onClick="GenerateCombo()"
             class="pure-button pure-button-primary generateButton">GENERATE A
             COMBO</button><button disabled="disabled" class="copyButton" id="copyButtonId" data-id="@item.Type"
@@ -310,10 +362,11 @@
             onclick="copyToClipboard(document.getElementById('comboBox').innerHTML)" class="pure-button copyButton">COPY
             COMBO</button>
          <br>
-         <input type="range" name="rangeInput" min="3" max="30" value="8" onchange="updateTextInput(this.value);">
-         <input type="text" id="textInput" value="6">
          <hr>
-         <br />
+         <p style="margin-top:20px; margin-bottom: 30px; font-style:italic">Clicking on a category name or move will
+            enable/disable it
+            from
+            the pool of possible moves.</p>
          <div id="moveContainer">
 
          </div>
@@ -347,7 +400,7 @@
          GenerateCombo();
       }
 
-      function changeMove(moveName) {
+      function changeMove(moveName, moveCategory) {
          for (var i = 0; i < combosState.length; i++) {
             if (moveName == combosState[i].displayName.toLowerCase()) {
                let state = combosState[i].isEnabled;
@@ -356,7 +409,9 @@
             }
          }
 
-         GenerateCombo();
+         // regenerate if category enabled
+         if (categories.filter(x => x[0] == moveCategory)[0][2])
+            GenerateCombo();
       }
 
       (function LetsGo() {
@@ -368,13 +423,12 @@
 
             let label = document.createElement("div");
             label.classList += "boxLabel";
-            label.innerHTML = `<label for=` + categories[i][0].toLowerCase() + `>` + categories[i][1] + `</label>` + `<input id = '` + categories[i][0].toLowerCase() + `' ` + (categories[i][2] == true ? `checked = ""` : ``) + ` onclick = "check('` + categories[i][0] + `')" type = "checkbox" />`;
+            label.innerHTML = `<input id = '` + categories[i][0].toLowerCase() + `' ` + (categories[i][2] == true ? `checked = ""` : ``) + ` onclick = "check('` + categories[i][0] + `')" type = "checkbox" />` + `<label id = 'label_` + categories[i][0].toLowerCase() + `' ` + ` for=` + categories[i][0].toLowerCase() + `>` + categories[i][1] + `</label>`;
 
             let moveCheckBoxContainer = document.createElement("div");
             moveCheckBoxContainer.classList += "moveCheckBoxContainer";
 
             box.appendChild(label);
-
             box.appendChild(moveCheckBoxContainer);
 
             let moves = Array();
@@ -387,10 +441,11 @@
             for (var m = 0; m < moves.length; m++) {
                //console.log(moves[m]);
                let moveCheck = document.createElement("input");
-               moveCheck.onclick = function () {changeMove(this.id);}
+               moveCheck.onclick = function () {changeMove(this.id, this.getAttribute("data-category"));}
                moveCheck.classList += "moveCheckBox";
                moveCheck.type = "checkbox";
                moveCheck.id = moves[m].displayName.toLowerCase();
+               moveCheck.setAttribute("data-category", categories[i][0]);
                if (moves[m].isEnabled) {
                   moveCheck.setAttribute("checked", "");
                }
@@ -398,7 +453,9 @@
                let moveCheckLabel = document.createElement("label");
                moveCheckLabel.innerHTML = moves[m].displayName;
                moveCheckLabel.setAttribute("for", moves[m].displayName.toLowerCase());
-               moveCheckLabel.style = "margin-right: 20px;";
+               moveCheckLabel.id = 'label_' + moves[m].displayName.toLowerCase();
+               moveCheckLabel.classList += "moveCheckLabel";
+               //moveCheckLabel.style = "margin-right: 20px;";
 
                moveCheckBoxContainer.appendChild(moveCheck);
                moveCheckBoxContainer.appendChild(moveCheckLabel);
