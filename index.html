@@ -18,12 +18,75 @@
    <script src="js/Toast.min.js"></script>
    <style>
       #credits {
-         position: absolute;
+         position: fixed;
          bottom: 0px;
          right: 30px;
          font-size: 2rem;
       }
+
+      /*lol*/
+
+      .boxContainer:first-of-type {
+         max-width: 100%;
+         border: 2px solid white;
+         border-top: 2px solid white;
+         border-bottom: 1px solid white;
+         position: relative;
+      }
+
+      .boxContainer {
+         max-width: 100%;
+         border: 2px solid white;
+         border-top: 1px solid white;
+         border-bottom: 1px solid white;
+         position: relative;
+      }
+
+      .boxContainer:last-of-type {
+         max-width: 100%;
+         border: 2px solid white;
+         border-top: 1px solid white;
+         border-bottom: 2px solid white;
+         position: relative;
+      }
+
+
+      .boxLabel {
+         position: absolute;
+         top: -15px;
+         left: 10px;
+         height: 20px;
+         padding-left: 10px;
+         padding-right: 10px;
+         max-width: 100%;
+         color: #fff;
+         background-color: var(--background-body);
+         /*border: 2px solid rgb(0, 0, 0);*/
+         text-align: left;
+         font-size: 20px;
+      }
+
+      .moveCheckBoxContainer {
+         padding: 35px;
+      }
    </style>
+
+   <!--research-->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-441BD58LE0"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-441BD58LE0');
+   </script>
+   <script type="text/javascript">
+      (function (c, l, a, r, i, t, y) {
+         c[a] = c[a] || function () {(c[a].q = c[a].q || []).push(arguments)};
+         t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+         y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "b6if37doio");
+   </script>
 </head>
 
 <!-- created by Gen / GMR / Genevra Rose -->
@@ -35,90 +98,178 @@
          <h1 style="text-align: center; font-weight: 300; font-size: 3rem;">ANIMATOR'S COMBO GENERATOR</h1>
       </header>
       <script>
-         var use_meleeCombos = true;
-         var use_advancedCombos = false;
-         var use_elementalCombos = false;
-         var use_sillyCombos = false;
-         var use_finisherCombos = false;
          var comboLength = 6;
-         function generateCombo() {
-            var combos = new Array();
-            var noCombos = ['No Combos'];
-            var meleeCombos = ["Heavy Kick", "Light Kick", "Light Punch", "Heavy Punch", {move: "Grab", unique: true, follower: "Close Range Combo, Throw", used: false}, "Elbow", "Knee", "Hip-check",];
-            var advancedCombos = ["Uppercut", "Jab", "Bone Breaker", "Charge", "Backflip Kick", "Frontflip Kick", "Roundhouse Kick", "Karate Chop", "Spin Kick", "Drop Kick", "Hip-check"];
-            var elementalCombos = ["Laser Beam", "Electrocute", "Fire Element Attack", "Meteor Summon", "Lightning Bolt", "Ground Slam", "Next Move Fire Charged", "Next Move Electrically Charged"];
-            var sillyCombos = ["Eye Poke", "Groin Kick", "Slap"];
-            var finishers = ["Neck Snap", "Falcon Punch", "Knock Out", "Break In Half", "Back Break"]
-            comboLength = document.getElementById("textInput").value;
-            prevComboLength = comboLength;
-            if (!use_meleeCombos && !use_advancedCombos && !use_elementalCombos) {
-               combos.push.apply(combos, noCombos);
-               comboLength = 1;
-            } else if (comboLength == 1) {
-               comboLength = prevComboLength;
+         class ComboMove {
+            constructor(moveId, category, internalName, displayName, isUnique, followerMove, isFinisher = false, used = false, isEnabled = true) {
+               this.moveId = moveId;
+               this.category = category;
+               this.internalName = internalName.length > 0 ? internalName : displayName;
+               this.displayName = displayName;
+               this.isUnique = isUnique;
+               this.followerMove = followerMove;
+               this.used = used;
+               this.isFinisher = isFinisher;
+               this.isEnabled = isEnabled;
             }
-            if (use_meleeCombos) {
-               combos.push.apply(combos, meleeCombos);
-               document.getElementById("meleeAttackBtn").innerHTML = "<i class=\"fa fa-check\" aria-hidden=\"true\"></i> BASIC ATTACKS";
-            }
-            else {
-               document.getElementById("meleeAttackBtn").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> BASIC ATTACKS";
-            } if (use_advancedCombos) {
-               combos.push.apply(combos, advancedCombos);
-               document.getElementById("advancedAttackBtn").innerHTML = "<i class=\"fa fa-check\" aria-hidden=\"true\"></i> ADVANCED ATTACKS";
-            }
-            else {
-               document.getElementById("advancedAttackBtn").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> ADVANCED ATTACKS";
-            } if (use_elementalCombos) {
-               combos.push.apply(combos, elementalCombos);
-               document.getElementById("elementalAttackBtn").innerHTML = "<i class=\"fa fa-check\" aria-hidden=\"true\"></i> ELEMENTAL ATTACKS";
-            }
-            else {
-               document.getElementById("elementalAttackBtn").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> ELEMENTAL ATTACKS";
-            }
-            if (use_sillyCombos) {
-               combos.push.apply(combos, sillyCombos);
-               document.getElementById("sillyAttackBtn").innerHTML = "<i class=\"fa fa-check\" aria-hidden=\"true\"></i> SILLY ATTACKS";
-            }
-            else {
-               document.getElementById("sillyAttackBtn").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> SILLY ATTACKS";
-            }
-            if (use_finisherCombos) {
-               document.getElementById("finishersBtn").innerHTML = "<i class=\"fa fa-check\" aria-hidden=\"true\"></i> FINISHERS";
-            }
-            else {
-               document.getElementById("finishersBtn").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> FINISHERS";
-            }
-            var combosTogether = "";
-            var count = 0;
-            while (count < comboLength) {
-               var rand = Math.floor(combos.length * Math.random());
-               if (combos[rand].move != null) {
-                  if (combos[rand].used === true) {
-                     //console.log('skipped usage of unique move');
+         }
+         function getFinisher(combos) {
+            let arr = Array();
+            let retry = 99;
+
+            for (var i = 0; i < combos.length; i++) {
+               if (retry < 0)
+                  break;
+               if (combos[i].isFinisher === true) {
+
+                  if (combos[i].category[2] == false) {
+                     retry--;
                      continue;
                   }
-                  combos[rand].used = true;
-                  combosTogether = combosTogether + combos[rand].move;
-                  if (combos[rand].follower != null) {
-                     combosTogether += ", ";
-                     combosTogether = combosTogether + combos[rand].follower;
-                  }
 
-               } else {
-                  combosTogether = combosTogether + combos[rand];
+
+                  // we don't need to break for finishers because we never add if disabled
+                  arr.push(combos[i]);
+               }
+            }
+
+            var rand = Math.floor((arr.length) * Math.random());
+            return arr[rand];
+         }
+         // internal name, display name, enabled
+         var categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", false], ["elemental", "Elemental Moves", false], ["silly", "Silly Moves", false], ["movement", "Movement", false], ["finisher", "Finisher Moves", false]];
+         var combosState = new Array(
+            // melee
+            new ComboMove(0, categories[0], "", "Heavy Kick", false, null),
+            new ComboMove(0, categories[0], "", "Light Kick", false, null),
+            new ComboMove(0, categories[0], "", "Light Punch", false, null),
+            new ComboMove(0, categories[0], "", "Heavy Punch", false, null),
+            new ComboMove(0, categories[0], "", "Grab", true, "Close Range Hit, Throw/Distance"),
+            new ComboMove(0, categories[0], "", "Elbow", false, null),
+            new ComboMove(0, categories[0], "", "Knee", false, null),
+            new ComboMove(0, categories[0], "", "Hip Check", false, null),
+
+            // advanced
+            new ComboMove(0, categories[1], "", "Uppercut", false, null),
+            new ComboMove(0, categories[1], "", "Jab", false, null),
+            new ComboMove(0, categories[1], "", "Bone Breaker", false, null),
+            new ComboMove(0, categories[1], "", "Charge", false, null),
+            new ComboMove(0, categories[1], "", "Backflip Kick", false, null),
+            new ComboMove(0, categories[1], "", "Frontflip Kick", false, null),
+            new ComboMove(0, categories[1], "", "Roundhouse Kick", false, null),
+            new ComboMove(0, categories[1], "", "Karate Chop", false, null),
+            new ComboMove(0, categories[1], "", "Spin Kick", false, null),
+            new ComboMove(0, categories[1], "", "Drop Kick", false, null),
+
+            // elemental
+            new ComboMove(0, categories[2], "", "Laser Beam", false, null),
+            new ComboMove(0, categories[2], "", "Electrocute", false, null),
+            new ComboMove(0, categories[2], "", "Fire Element Attack", false, null),
+            new ComboMove(0, categories[2], "", "Meteor Summon", false, null),
+            new ComboMove(0, categories[2], "", "Lightning Bolt", false, null),
+            new ComboMove(0, categories[2], "", "Ground Slam", false, null),
+            // todo: 'not after the other move' parameter vs simply unique
+            new ComboMove(0, categories[2], "", "Next Move Fire Charged", true, null),
+            new ComboMove(0, categories[2], "", "Next Move Electrically Charged", true, null),
+
+
+            // silly combos
+            new ComboMove(0, categories[3], "", "Eye Poke", false, null),
+            new ComboMove(0, categories[3], "", "Groin Kick", false, null),
+            new ComboMove(0, categories[3], "", "Slap", false, null),
+
+            // movement
+            new ComboMove(0, categories[4], "", "Backflip", false, null),
+            new ComboMove(0, categories[4], "", "Frontflip", false, null),
+            new ComboMove(0, categories[4], "", "Slide", false, null),
+            new ComboMove(0, categories[4], "", "Trip", false, null),
+            new ComboMove(0, categories[4], "", "Epic Fight Stance", false, null),
+
+            // finishers
+            new ComboMove(0, categories[5], "", "Neck Snap", false, null, true),
+            new ComboMove(0, categories[5], "", "Falcon Punch", false, null, true),
+            new ComboMove(0, categories[5], "", "Knock Out", false, null, true),
+            new ComboMove(0, categories[5], "", "Break In Half", false, null, true),
+            new ComboMove(0, categories[5], "", "Back Break", false, null, true),
+         );
+         // i hate javascript
+         var combos = JSON.parse(JSON.stringify(combosState));
+         var FINISHER_MOVE_INDEX = 5;
+         function GenerateCombo() {
+            var combos = JSON.parse(JSON.stringify(combosState));
+            combos.filter(x => {return x.category[0] != "finisher";});
+
+            /*for (var test = 0; test < combos.length; test++) {
+               console.log(combos[test].used);
+            }*/
+
+            var generatedCombo = Array();
+
+            comboLength = document.getElementById("textInput").value;
+
+            var combosTogether = "";
+            let count = 0;
+            let retry = 999;
+            //let retryFinisher = 500;
+            while (count < comboLength) {
+               if (retry < 0) {
+                  console.log("Recovered - couldn't generate combo with parameters");
+                  combosTogether = "We tried and failed to generate a combo with the chosen parameters. Maybe you need to pick some moves first?";
+                  break;
+               }
+               var rand = Math.floor((combos.length) * Math.random());
+
+               //categories
+               if (combos[rand].isEnabled === false) {
+                  retry--;
+                  continue;
+               }
+               if (combos[rand].used === true && combos[rand].isUnique === true) {
+                  retry--;
+                  continue;
                }
 
+               /*
+               if (combos[rand].category == "finisher") {
+                  retryFinisher--;
+                  continue;
+               }
+               */
+
+               //categories
+               if (combos[rand].category[2] == false) {
+                  retry--;
+                  continue;
+               }
+
+
+
+
+               // mark move as used
+               combos[rand].used = true;
+
+               // Add displayname to string
+               let generatedMove = combos[rand].displayName;
+
+               if (combos[rand].followerMove != null) {
+                  combosTogether = combosTogether + generatedMove + ", " + combos[rand].followerMove;
+               } else {
+                  combosTogether = combosTogether + generatedMove;
+               }
 
                if (count < comboLength - 1) {
                   combosTogether += ", ";
                }
+
+
                count++;
             }
-            if (use_finisherCombos) {
-               combosTogether += ", " + finishers[Math.floor(finishers.length * Math.random())]
+
+            if (categories[FINISHER_MOVE_INDEX][2] == true) {
+               var comboFinishers = combosState.filter(x => x.category[0] == "finisher");
+               combosTogether += ", " + getFinisher(comboFinishers).displayName;
             }
-            var comboToGenerate = combosTogether;
+
+            let comboToGenerate = combosTogether;
             document.getElementById("comboBox").innerHTML = comboToGenerate;
 
             document.getElementById("copyButtonId").disabled = false;
@@ -132,35 +283,17 @@
                type: 'success'
             });
          }
-         function changeMelee() {
-            use_meleeCombos = !use_meleeCombos;
-            generateCombo();
-         }
-         function changeAdvanced() {
-            use_advancedCombos = !use_advancedCombos;
-            generateCombo();
-         }
-         function changeElemental() {
-            use_elementalCombos = !use_elementalCombos;
-            generateCombo();
-         }
-         function changeSilly() {
-            use_sillyCombos = !use_sillyCombos;
-            generateCombo();
-         }
-         function changeFinisher() {
-            use_finisherCombos = !use_finisherCombos;
-            generateCombo();
-         }
+
 
          function updateTextInput(val) {
             document.getElementById('textInput').value = val;
 
-            generateCombo();
+            GenerateCombo();
          }
+
       </script>
       <center>
-         <div style="min-height:100px;" id="comboBox">Your combo will generate here.</div>
+         <div style="min-height:100px; font-weight: 600;" id="comboBox">Your combo will generate here.</div>
          <style scoped>
             .generateButton {
                background: rgb(92, 241, 78);
@@ -170,7 +303,7 @@
                background: rgb(52, 201, 238);
             }
          </style>
-         <button id="generateButton" onClick="generateCombo()"
+         <button id="generateButton" onClick="GenerateCombo()"
             class="pure-button pure-button-primary generateButton">GENERATE A
             COMBO</button><button disabled="disabled" class="copyButton" id="copyButtonId" data-id="@item.Type"
             data-clipboard-action="copy" data-clipboard-target="div#comboBox"
@@ -180,16 +313,10 @@
          <input type="range" name="rangeInput" min="3" max="30" value="8" onchange="updateTextInput(this.value);">
          <input type="text" id="textInput" value="6">
          <hr>
-         <button onclick="changeMelee()" class="pure-button" id="meleeAttackBtn"><i class="fa fa-check"
-               aria-hidden="true"></i> BASIC ATTACKS</button>
-         <button onclick="changeAdvanced()" class="pure-button" id="advancedAttackBtn"><i class="fa fa-times"
-               aria-hidden="true"></i> ADVANCED ATTACKS</button>
-         <button onclick="changeElemental()" class="pure-button" id="elementalAttackBtn"><i class="fa fa-times"
-               aria-hidden="true"></i> ELEMENTAL ATTACKS</button>
-         <button onclick="changeSilly()" class="pure-button" id="sillyAttackBtn"><i class="fa fa-times"
-               aria-hidden="true"></i> SILLY ATTACKS</button>
-         <button onclick="changeFinisher()" class="pure-button" id="finishersBtn"><i class="fa fa-times"
-               aria-hidden="true"></i> FINISHERS</button>
+         <br />
+         <div id="moveContainer">
+
+         </div>
 
       </center>
    </div>
@@ -206,6 +333,81 @@
             return document.getElementById("comboBox");
          }
       });
+
+      var moveContainer = null;
+
+      function check(category) {
+         for (var i = 0; i < categories.length; i++) {
+            if (category == categories[i][0]) {
+               categories[i][2] = !categories[i][2];
+               break;
+            }
+         }
+
+         GenerateCombo();
+      }
+
+      function changeMove(moveName) {
+         for (var i = 0; i < combosState.length; i++) {
+            if (moveName == combosState[i].displayName.toLowerCase()) {
+               let state = combosState[i].isEnabled;
+               combosState[i].isEnabled = !state;
+               break;
+            }
+         }
+
+         GenerateCombo();
+      }
+
+      (function LetsGo() {
+         moveContainer = document.getElementById("moveContainer");
+
+         for (var i = 0; i < categories.length; i++) {
+            let box = document.createElement("div");
+            box.classList += "boxContainer";
+
+            let label = document.createElement("div");
+            label.classList += "boxLabel";
+            label.innerHTML = `<label for=` + categories[i][0].toLowerCase() + `>` + categories[i][1] + `</label>` + `<input id = '` + categories[i][0].toLowerCase() + `' ` + (categories[i][2] == true ? `checked = ""` : ``) + ` onclick = "check('` + categories[i][0] + `')" type = "checkbox" />`;
+
+            let moveCheckBoxContainer = document.createElement("div");
+            moveCheckBoxContainer.classList += "moveCheckBoxContainer";
+
+            box.appendChild(label);
+
+            box.appendChild(moveCheckBoxContainer);
+
+            let moves = Array();
+            for (var j = 0; j < combos.length; j++) {
+               if (combos[j].category[0] == categories[i][0]) {
+                  moves.push(combos[j]);
+               }
+            }
+            //Options
+            for (var m = 0; m < moves.length; m++) {
+               //console.log(moves[m]);
+               let moveCheck = document.createElement("input");
+               moveCheck.onclick = function () {changeMove(this.id);}
+               moveCheck.classList += "moveCheckBox";
+               moveCheck.type = "checkbox";
+               moveCheck.id = moves[m].displayName.toLowerCase();
+               if (moves[m].isEnabled) {
+                  moveCheck.setAttribute("checked", "");
+               }
+
+               let moveCheckLabel = document.createElement("label");
+               moveCheckLabel.innerHTML = moves[m].displayName;
+               moveCheckLabel.setAttribute("for", moves[m].displayName.toLowerCase());
+               moveCheckLabel.style = "margin-right: 20px;";
+
+               moveCheckBoxContainer.appendChild(moveCheck);
+               moveCheckBoxContainer.appendChild(moveCheckLabel);
+            }
+
+
+            moveContainer.appendChild(box);
+         }
+      })();
    </script>
 </body>
 
