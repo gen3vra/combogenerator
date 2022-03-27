@@ -196,7 +196,7 @@
             return arr[rand];
          }
          // internal name, display name, enabled
-         var categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", false], ["elemental", "Elemental Moves", false], ["silly", "Silly Moves", false], ["movement", "Movement", false], ["finisher", "Finisher Moves", false]];
+         var categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", true], ["elemental", "Elemental Moves", true], ["silly", "Silly Moves", true], ["movement", "Movement", true], ["finisher", "Finisher Moves", true]];
          var combosState = new Array(
             // melee
             new ComboMove(0, categories[0], "", "Heavy Kick", false, null),
@@ -393,6 +393,19 @@
    <p style="text-align: center;">Hey, listen! Have an idea for a move? <br /><a style="font-size:1.1rem;"
          href="https://forms.gle/gB9RayfFNtqENAzE8" target="_blank">Click here to visit a form to submit it
          (https://forms.gle/gB9RayfFNtqENAzE8)</a></p>
+   <div class="patchNotes">
+      <h3>Patch Notes - 3.27.2022</h3>
+      <p>
+      <ul>
+         <li>
+            Updated categories and moves
+         </li>
+         <li>
+            Enabled all moves by default based on user usage
+         </li>
+      </ul>
+      </p>
+   </div>
    <p id="credits"><a href="https://rose.dev/" target="_blank">🌹</a></p>
    <script>
       new ClipboardJS('.copyButton', {
