@@ -86,6 +86,18 @@
          color: #2db620;
       }
 
+      .isUsed label .isused {
+         display: inline-block;
+      }
+
+      .isUsed label .notused {
+         display: none;
+      }
+
+      .notUsed label .isused {
+         display: none;
+      }
+
       /**************/
 
       .moveCheckBoxContainer {
@@ -388,11 +400,46 @@
       });
 
       var moveContainer = null;
+      // used to refresh ui state at start and run check() function
+      var loadStart = false;
 
+      // UI function should probably break this up
       function check(category) {
+         if (!loadStart) {
+            for (var i = 0; i < categories.length; i++) {
+               var option = categories[i][2];
+               if (option) {
+                  document.getElementById(categories[i][0]).parentElement.classList.add("isUsed");
+                  document.getElementById(categories[i][0]).parentElement.classList.remove("notUsed");
+               }
+               else {
+                  document.getElementById(categories[i][0]).parentElement.classList.remove("isUsed");
+                  document.getElementById(categories[i][0]).parentElement.classList.add("notUsed");
+               }
+            }
+
+            loadStart = true;
+            console.log("Refreshed ui");
+            return;
+         }
+
+
          for (var i = 0; i < categories.length; i++) {
             if (category == categories[i][0]) {
-               categories[i][2] = !categories[i][2];
+               var prevOption = categories[i][2];
+               categories[i][2] = !prevOption;
+
+               // we're changing it to opposite so we would add it being used
+               if (!prevOption) {
+                  document.getElementById(category).parentElement.classList.add("isUsed");
+                  document.getElementById(category).parentElement.classList.remove("notUsed");
+               }
+               else {
+                  document.getElementById(category).parentElement.classList.remove("isUsed");
+                  document.getElementById(category).parentElement.classList.add("notUsed");
+               }
+
+
                break;
             }
          }
@@ -423,7 +470,9 @@
 
             let label = document.createElement("div");
             label.classList += "boxLabel";
-            label.innerHTML = `<input id = '` + categories[i][0].toLowerCase() + `' ` + (categories[i][2] == true ? `checked = ""` : ``) + ` onclick = "check('` + categories[i][0] + `')" type = "checkbox" />` + `<label id = 'label_` + categories[i][0].toLowerCase() + `' ` + ` for=` + categories[i][0].toLowerCase() + `>` + categories[i][1] + `</label>`;
+            label.innerHTML = `<input id = '` + categories[i][0].toLowerCase() + `' ` + (categories[i][2] == true ? `checked = ""` : ``) + ` onclick = "check('` + categories[i][0] + `')" type = "checkbox" />`
+               +
+               `<label id = 'label_` + categories[i][0].toLowerCase() + `' ` + ` for=` + categories[i][0].toLowerCase() + `>` + categories[i][1] + ` <span class="fa fa-check isused"></span><span class="fa fa-times notused"></span></label>`;
 
             let moveCheckBoxContainer = document.createElement("div");
             moveCheckBoxContainer.classList += "moveCheckBoxContainer";
@@ -464,6 +513,9 @@
 
             moveContainer.appendChild(box);
          }
+
+         // refresh ui at start
+         check("start_ui");
       })();
    </script>
 </body>
