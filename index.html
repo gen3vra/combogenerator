@@ -131,6 +131,43 @@
       .moveCheckLabel {
          margin-right: 20px;
       }
+
+
+      /* Tooltip container */
+      .tooltip {
+         position: relative;
+         display: inline-block;
+         border-bottom: 1px dotted black;
+         /* If you want dots under the hoverable text */
+      }
+
+      /* Tooltip text */
+      .tooltip .tooltiptext {
+         font-size: 0.75rem;
+         visibility: hidden;
+         background-color: black;
+         color: #fff;
+         text-align: center;
+         padding: 5px 0;
+         border-radius: 6px;
+
+         /* Position the tooltip text - see examples below! */
+         position: absolute;
+         z-index: 1;
+      }
+
+      .tooltip .tooltiptext {
+         min-width: 120px;
+         bottom: 100%;
+         left: 50%;
+         margin-left: -60px;
+         /* Use half of the width (120/2 = 60), to center the tooltip */
+      }
+
+      /* Show the tooltip text when you mouse over the tooltip container */
+      .tooltip:hover .tooltiptext {
+         visibility: visible;
+      }
    </style>
 
    <!--research-->
@@ -162,16 +199,17 @@
       <script>
          var comboLength = 6;
          class ComboMove {
-            constructor(moveId, category, internalName, displayName, isUnique, followerMove, isFinisher = false, used = false, isEnabled = true) {
+            constructor(moveId, category, internalName, displayName, isUnique, followerMove, isFinisher = false, tooltipText = "", isEnabled = true, used = false) {
                this.moveId = moveId;
                this.category = category;
                this.internalName = internalName.length > 0 ? internalName : displayName;
                this.displayName = displayName;
                this.isUnique = isUnique;
                this.followerMove = followerMove;
-               this.used = used;
                this.isFinisher = isFinisher;
+               this.tooltipText = tooltipText;
                this.isEnabled = isEnabled;
+               this.used = used;
             }
          }
          function getFinisher(combos) {
@@ -181,7 +219,12 @@
             for (var i = 0; i < combos.length; i++) {
                if (retry < 0)
                   break;
+
                if (combos[i].isFinisher === true) {
+                  if (combos[i].isEnabled == false) {
+                     retry--;
+                     continue;
+                  }
 
                   if (combos[i].category[2] == false) {
                      retry--;
@@ -192,13 +235,17 @@
                   // we don't need to break for finishers because we never add if disabled
                   arr.push(combos[i]);
                }
+
             }
 
             var rand = Math.floor((arr.length) * Math.random());
             return arr[rand];
          }
+
          // internal name, display name, enabled
          var categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", true], ["elemental", "Elemental Moves", true], ["silly", "Silly Moves", true], ["movement", "Movement", true], ["finisher", "Finisher Moves", true]];
+
+         // moveID (unused), category, 'internal' name (unused), move display name, onlyUseOnce bool, next Move after only using once string, tooltip text
          var combosState = new Array(
             // melee
             new ComboMove(0, categories[0], "", "Heavy Kick", false, null),
@@ -209,6 +256,9 @@
             new ComboMove(0, categories[0], "", "Elbow", false, null),
             new ComboMove(0, categories[0], "", "Knee", false, null),
             new ComboMove(0, categories[0], "", "Hip Check", false, null),
+            new ComboMove(0, categories[0], "", "Push", false, null),
+            new ComboMove(0, categories[0], "", "Block", false, null),
+            new ComboMove(0, categories[0], "", "Headbutt", false, null),
 
             // advanced
             new ComboMove(0, categories[1], "", "Uppercut", false, null),
@@ -221,6 +271,7 @@
             new ComboMove(0, categories[1], "", "Karate Chop", false, null),
             new ComboMove(0, categories[1], "", "Spin Kick", false, null),
             new ComboMove(0, categories[1], "", "Drop Kick", false, null),
+            new ComboMove(0, categories[1], "", "Leg Sweep", false, null),
 
             // elemental
             new ComboMove(0, categories[2], "", "Laser Beam", false, null),
@@ -229,6 +280,11 @@
             new ComboMove(0, categories[2], "", "Meteor Summon", false, null),
             new ComboMove(0, categories[2], "", "Lightning Bolt", false, null),
             new ComboMove(0, categories[2], "", "Ground Slam", false, null),
+            new ComboMove(0, categories[2], "", "Boulder Throw", false, null),
+            new ComboMove(0, categories[2], "", "Water Blast", false, null),
+            new ComboMove(0, categories[2], "", "Ice Spike", false, null),
+            new ComboMove(0, categories[2], "", "Acid Attack", false, null),
+            new ComboMove(0, categories[2], "", "Lava Blast", false, null),
             // todo: 'not after the other move' parameter vs simply unique
             new ComboMove(0, categories[2], "", "Next Move Fire Charged", true, null),
             new ComboMove(0, categories[2], "", "Next Move Electrically Charged", true, null),
@@ -238,13 +294,21 @@
             new ComboMove(0, categories[3], "", "Eye Poke", false, null),
             new ComboMove(0, categories[3], "", "Groin Kick", false, null),
             new ComboMove(0, categories[3], "", "Slap", false, null),
+            new ComboMove(0, categories[3], "", "Bite", false, null),
+
 
             // movement
             new ComboMove(0, categories[4], "", "Backflip", false, null),
             new ComboMove(0, categories[4], "", "Frontflip", false, null),
             new ComboMove(0, categories[4], "", "Slide", false, null),
             new ComboMove(0, categories[4], "", "Trip", false, null),
+            new ComboMove(0, categories[4], "", "Spin", false, null),
+            new ComboMove(0, categories[4], "", "Jump", false, null),
+            new ComboMove(0, categories[4], "", "Dodge", false, null),
+            new ComboMove(0, categories[4], "", "Wallrun", false, null),
+            new ComboMove(0, categories[4], "", "Taunt", false, null),
             new ComboMove(0, categories[4], "", "Epic Fight Stance", false, null),
+
 
             // finishers
             new ComboMove(0, categories[5], "", "Neck Snap", false, null, true),
@@ -252,6 +316,13 @@
             new ComboMove(0, categories[5], "", "Knock Out", false, null, true),
             new ComboMove(0, categories[5], "", "Break In Half", false, null, true),
             new ComboMove(0, categories[5], "", "Back Break", false, null, true),
+            new ComboMove(0, categories[5], "", "Slice", false, null, true),
+            new ComboMove(0, categories[5], "", "Decapitate", false, null, true),
+            new ComboMove(0, categories[5], "", "Explode", false, null, true),
+            new ComboMove(0, categories[5], "", "Disintegrate", false, null, true),
+            new ComboMove(0, categories[5], "", "Mic Drop", false, null, true),
+            // disabled by default
+            new ComboMove(0, categories[5], "", "Wild Bonfire Blast", false, null, true, "Close or medium range. Charge fire in hand, close hand, fist becomes fire, fly forward and punch them with the fire. Then raise hand to the sky and shoot the fire ball. The fire ball comes down and explodes, killing them.", false),
          );
          // i hate javascript
          var combos = JSON.parse(JSON.stringify(combosState));
@@ -328,6 +399,7 @@
 
             if (categories[FINISHER_MOVE_INDEX][2] == true) {
                var comboFinishers = combosState.filter(x => x.category[0] == "finisher");
+               console.log(comboFinishers);
                combosTogether += ", " + getFinisher(comboFinishers).displayName;
             }
 
@@ -386,7 +458,6 @@
          <div id="moveContainer">
 
          </div>
-
       </center>
    </div>
    <br />
@@ -396,7 +467,21 @@
          href="https://forms.gle/gB9RayfFNtqENAzE8" target="_blank">Click here to visit a form to submit it
          (https://forms.gle/gB9RayfFNtqENAzE8)</a></p>
    <div class="patchNotes">
-      <h3>Patch Notes - 3.27.2022</h3>
+      <h3>Most Recent Patch Notes</h3>
+      <p>
+      <ul>
+         <li>
+            Added more moves submitted by users
+         </li>
+         <li>
+            Fixed finishers not being properly disabled
+         </li>
+         <li>
+            Added tooltips to certain moves
+         </li>
+      </ul>
+      </p>
+      <hr />
       <p>
       <ul>
          <li>
@@ -520,8 +605,18 @@
                moveCheckLabel.innerHTML = moves[m].displayName;
                moveCheckLabel.setAttribute("for", moves[m].displayName.toLowerCase());
                moveCheckLabel.id = 'label_' + moves[m].displayName.toLowerCase();
-               moveCheckLabel.classList += "moveCheckLabel";
+               moveCheckLabel.classList += "moveCheckLabel tooltip";
                //moveCheckLabel.style = "margin-right: 20px;";
+
+               // Attach tooltip if needed/defined
+               if (moves[m].tooltipText != "") {
+                  let moveCheckTooltip = document.createElement("span");
+                  moveCheckTooltip.className = "tooltiptext";
+                  moveCheckTooltip.innerHTML = moves[m].tooltipText;
+
+                  // Add tooltip to label
+                  moveCheckLabel.appendChild(moveCheckTooltip);
+               }
 
                moveCheckBoxContainer.appendChild(moveCheck);
                moveCheckBoxContainer.appendChild(moveCheckLabel);
