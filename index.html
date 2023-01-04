@@ -242,24 +242,27 @@
             return arr[rand];
          }
 
-         var categories = null;
+         var categories = categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", true], ["elemental", "Elemental Moves", true], ["silly", "Silly Moves", true], ["movement", "Movement", true], ["finisher", "Finisher Moves", true]];
          var combosState = null;
 
          let hasData = false;
          // Check for save data
 
-         var isData = localStorage.getItem("comboGeneratorSave");
+         // I want to rewrite the generation to be more efficient and less buggy
+         // Then we can save move preferences and stuff
+         //var isData = localStorage.getItem("comboGeneratorSave");
+         let isData = false;
          if (isData) {
             hasData = true;
             console.log(isData);
             console.log("data");
             combosState = JSON.parse(isData);
-            let categoriesData = localStorage.getItem("comboGeneratorSaveCat");
-            categories = JSON.parse(categoriesData);
+            //let categoriesData = localStorage.getItem("comboGeneratorSaveCat");
+            //categories = JSON.parse(categoriesData);
          } else {
             console.log("no data");
             // internal name, display name, enabled
-            categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", true], ["elemental", "Elemental Moves", true], ["silly", "Silly Moves", true], ["movement", "Movement", true], ["finisher", "Finisher Moves", true]];
+            //categories = [["melee", "Basic Attacks", true], ["advanced", "Advanced Attacks", true], ["elemental", "Elemental Moves", true], ["silly", "Silly Moves", true], ["movement", "Movement", true], ["finisher", "Finisher Moves", true]];
 
             // moveID (unused), category, 'internal' name (unused), move display name, onlyUseOnce bool, next Move after only using once string, tooltip text
             combosState = new Array(
@@ -521,9 +524,10 @@
       <h3>Most Recent Patch Notes</h3>
       <p>
       <ul>
-         <li>
+         <!-- I want to add presets
+            <li>
             Combo generator saves your move preferences now
-         </li>
+         </li>-->
          <li>
             Added more moves submitted by users
          </li>
@@ -573,6 +577,8 @@
 
             loadStart = true;
             console.log("Refreshed ui");
+            GenerateCombo();
+
             return;
          }
 
